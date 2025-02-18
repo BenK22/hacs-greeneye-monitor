@@ -9,9 +9,11 @@ import homeassistant.helpers.selector as selector
 import voluptuous as vol
 from greeneye.api import TemperatureUnit
 from greeneye.monitor import MonitorType
+from awesomeversion import AwesomeVersion
 from homeassistant import config_entries
 from homeassistant import data_entry_flow
 from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.const import __version__ as HAVERSION
 from homeassistant.const import CONF_PORT
 from homeassistant.const import CONF_TEMPERATURE_UNIT
 from homeassistant.const import UnitOfEnergy
@@ -467,8 +469,10 @@ def yaml_to_config_entry(
 
 class GreeneyeMonitorOptionsFlow(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
+        """Initialize options flow. Fix borrowed from https://github.com/hacs/integration/pull/4181""" 
+        if AwesomeVersion(HAVERSION) < "2024.11.99":
+            self.config_entry = config_entry
+
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
